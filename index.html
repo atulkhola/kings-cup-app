@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>King&#39;s Cup Party Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>King&#39;s Cup Party Game</h1>
+
+  <!-- Setup form for entering player count -->
+  <div id="setup">
+    <label for="playerCount">Number of players (2–10):</label>
+    <input type="number" id="playerCount" min="2" max="10" value="2">
+    <button id="startBtn">Start Game</button>
+    <p id="warning">Note: This game is intended for adult entertainment only. Always play responsibly and remember you can substitute any beverage for a non‑alcoholic drink or perform a fun challenge instead.</p>
+  </div>
+
+  <!-- Game area -->
+  <div id="game" style="display:none;">
+    <p id="currentPlayer"></p>
+    <button id="drawBtn">Draw Card</button>
+    <div id="cardArea">
+      <div id="cardDisplay" class="card-back"></div>
+    </div>
+    <div id="ruleDisplay"></div>
+    <button id="nextBtn" style="display:none;">Next Turn</button>
+    <button id="resetBtn">Reset Game</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
