@@ -85,6 +85,237 @@ button:hover {
   user-select: none;
 }
 
+/* The deck represents the stack of cards to draw from. It has the same
+   dimensions as a single card but is styled to look like a stack. */
+#deck.card-back {
+  position: relative;
+  cursor: pointer;
+  /* Stacked appearance using multiple shadows */
+  box-shadow:
+    0px 2px 0px 0px #d0d0d0,
+    0px 4px 0px 0px #c0c0c0,
+    0px 6px 0px 0px #b0b0b0,
+    0px 8px 0px 0px #a0a0a0;
+  transition: transform 0.1s ease;
+}
+
+#deck.card-back:hover {
+  transform: translateY(-2px);
+}
+
+/* Story text below the card */
+#storyDisplay {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #555;
+  min-height: 40px;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Custom animations for specific card types. These animations augment
+   the generic card classes with movement, rotation or scaling to
+   reinforce the theme of each card. */
+.waterfall-animation {
+  animation: waterfall 1s ease-in-out forwards;
+}
+
+.choose-animation {
+  animation: choose 0.6s ease-out forwards;
+}
+
+.me-animation {
+  animation: meBounce 0.6s ease-in-out forwards;
+}
+
+.floor-animation {
+  animation: floorFall 0.6s ease-in forwards;
+}
+
+.guys-animation {
+  animation: guysZoom 0.6s ease-in forwards;
+}
+
+.girls-animation {
+  animation: girlsZoom 0.6s ease-in forwards;
+}
+
+.heaven-animation {
+  animation: heavenRise 0.7s ease-out forwards;
+}
+
+.mate-animation {
+  animation: mateHeart 0.8s ease-in-out forwards;
+}
+
+.rhyme-animation {
+  animation: rhymeSpin 0.8s ease-in-out forwards;
+}
+
+.category-animation {
+  animation: categorySwing 0.8s ease-in-out forwards;
+}
+
+.rule-animation {
+  animation: ruleFlash 0.6s ease-in-out forwards;
+}
+
+.question-animation {
+  animation: questionWiggle 0.8s ease-in-out forwards;
+}
+
+.king-animation {
+  animation: kingShake 0.8s ease-in-out forwards;
+}
+
+/* Keyframes for custom animations */
+@keyframes waterfall {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 0% 100%;
+  }
+}
+
+@keyframes choose {
+  0% {
+    transform: translateX(-120px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes meBounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-12px);
+  }
+  60% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes floorFall {
+  0% {
+    transform: translateY(-150px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes guysZoom {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes girlsZoom {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes heavenRise {
+  0% {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes mateHeart {
+  0% {
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes rhymeSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes categorySwing {
+  0% {
+    transform: rotate(-10deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes ruleFlash {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes questionWiggle {
+  0% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes kingShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+}
+
 .card-back {
   background: #e0e0e0;
   border: 2px solid #bbb;
