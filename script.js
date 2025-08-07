@@ -58,6 +58,55 @@ const cardAssignments = {
   }
 };
 
+// Define icons and animations for each card value. These mappings use the DiceBear
+// "icons" avatar style to retrieve simple pictograms based on a seed. Each
+// card value is also assigned an animation class defined in the CSS to bring
+// variety to the drawing experience. Feel free to tweak these seeds and
+// animation names to change the look and feel of each card.
+const iconMap = {
+  'A': 'water',        // wave icon for Waterfall
+  '2': 'person-plus', // choose another player
+  '3': 'person',      // you drink
+  '4': 'arrow-down',  // touch the floor
+  '5': 'male',        // guys drink
+  '6': 'female',      // girls drink
+  '7': 'arrow-up',    // heaven (point up)
+  '8': 'people',      // mate / choose someone
+  '9': 'mic',         // rhyme (microphone)
+  '10': 'list',       // categories
+  'J': 'hammer',      // make a rule
+  'Q': 'question',    // question master
+  'K': 'crown'        // king’s cup
+};
+const animationMap = {
+  'A': 'flip-animation',
+  '2': 'slide-animation',
+  '3': 'bounce-animation',
+  '4': 'fade-animation',
+  '5': 'zoom-animation',
+  '6': 'zoom-animation',
+  '7': 'slide-animation',
+  '8': 'bounce-animation',
+  '9': 'zoom-animation',
+  '10': 'rotate-animation',
+  'J': 'flip-animation',
+  'Q': 'slide-animation',
+  'K': 'rotate-animation'
+};
+
+// Attach icon and animation to each card assignment based on the maps above.
+for (const key in iconMap) {
+  if (cardAssignments[key]) {
+    cardAssignments[key].icon = `https://api.dicebear.com/9.x/icons/png?seed=${iconMap[key]}&size=64`;
+    cardAssignments[key].animation = animationMap[key];
+  }
+}
+
+// Track the current animation class so that it can be removed when drawing
+// subsequent cards. This avoids stacking multiple animation classes on the
+// card display element.
+let currentAnimationClass = '';
+
 // Create a new deck: 52 cards represented only by their value (Ace, 2–10, J, Q, K).
 function createDeck() {
   const values = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
@@ -167,9 +216,18 @@ drawBtn.addEventListener('click', () => {
   if (value === 'K') {
     kingsDrawn++;
   }
-  // Display card front with value
-  cardDisplay.className = 'card-front';
-  cardDisplay.textContent = value;
+      // Display card front with value and apply animation
+      // Remove any previous animation class before adding a new one
+      if (currentAnimationClass) {
+        cardDisplay.classList.remove(currentAnimationClass);
+      }
+      cardDisplay.className = 'card-front';
+      // Apply the animation class for this card
+      currentAnimationClass = assignment.animation || '';
+      if (currentAnimationClass) {
+        cardDisplay.classList.add(currentAnimationClass);
+      }
+      cardDisplay.textContent = value;
   // Compose the rule description with dynamic player suggestion if needed
   let description = assignment.description;
   // For cards that require choosing another player (2 and 8), suggest a random other player
@@ -189,7 +247,9 @@ drawBtn.addEventListener('click', () => {
       description += ' This is the fourth King – you drink the cup.';
     }
   }
-  ruleDisplay.textContent = `${assignment.title}: ${description}`;
+      // Show the rule along with an icon. Use innerHTML to include the icon image.
+      const iconUrl = assignment.icon;
+      ruleDisplay.innerHTML = `<img src="${iconUrl}" alt="" style="width:32px;height:32px;vertical-align:middle;margin-right:0.5rem;"> <strong>${assignment.title}</strong>: ${description}`;
   // After drawing, disable draw button and show Next Turn
   drawBtn.disabled = true;
   nextBtn.style.display = 'inline-block';
@@ -197,9 +257,13 @@ drawBtn.addEventListener('click', () => {
 
 // Move to next player's turn
 nextBtn.addEventListener('click', () => {
-  // Reset card display to back
-  cardDisplay.className = 'card-back';
-  cardDisplay.textContent = '';
+      // Reset card display to back and remove any animation class
+      if (currentAnimationClass) {
+        cardDisplay.classList.remove(currentAnimationClass);
+        currentAnimationClass = '';
+      }
+      cardDisplay.className = 'card-back';
+      cardDisplay.textContent = '';
   ruleDisplay.textContent = '';
   // Advance player index
   currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
@@ -215,13 +279,19 @@ resetBtn.addEventListener('click', () => {
   ruleDisplay.textContent = '';
   cardDisplay.textContent = '';
   cardDisplay.className = 'card-back';
-  // Reset names collection state
+      // Reset names collection state
   namesCollected = false;
   nameInputsDiv.style.display = 'none';
   nameInputsDiv.innerHTML = '';
   startBtn.textContent = 'Next';
   // Hide avatar
   avatarImg.style.display = 'none';
+
+      // Remove any animation class from the card display
+      if (currentAnimationClass) {
+        cardDisplay.classList.remove(currentAnimationClass);
+        currentAnimationClass = '';
+      }
 });
 
 // Update the display of whose turn it is
