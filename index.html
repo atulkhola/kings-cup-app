@@ -13,12 +13,17 @@
   <div id="setup">
     <label for="playerCount">Number of players (2–10):</label>
     <input type="number" id="playerCount" min="2" max="10" value="2">
-    <button id="startBtn">Start Game</button>
+    <!-- The start button serves two purposes: first to create name inputs, then to start the game -->
+    <button id="startBtn">Next</button>
+    <!-- Container for dynamic name input fields -->
+    <div id="nameInputs" style="display:none; margin-top:1rem;"></div>
     <p id="warning">Note: This game is intended for adult entertainment only. Always play responsibly and remember you can substitute any beverage for a non‑alcoholic drink or perform a fun challenge instead.</p>
   </div>
 
   <!-- Game area -->
   <div id="game" style="display:none;">
+    <!-- Display the current player's avatar and name -->
+    <img id="avatarImg" alt="" style="width:60px;height:60px;border-radius:50%;display:none;margin:0 auto 0.5rem;" />
     <p id="currentPlayer"></p>
     <button id="drawBtn">Draw Card</button>
     <div id="cardArea">
