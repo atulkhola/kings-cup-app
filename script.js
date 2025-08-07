@@ -6,55 +6,69 @@
 const cardAssignments = {
   'A': {
     title: 'Ace',
-    description: 'Waterfall: Everyone starts drinking. They stop when you stop.'
+    description: 'Waterfall: Everyone starts drinking. They stop when you stop.',
+    // A short story to accompany the rule and enhance the experience
+    story: 'A waterfall flows! Start sipping and everyone follows until you stop.'
   },
   '2': {
     title: 'Two',
-    description: 'You: Pick another player to drink.'
+    description: 'You: Pick another player to drink.',
+    story: 'Choose a friend to drink with you. Tap a player and share the moment.'
   },
   '3': {
     title: 'Three',
-    description: 'Me: You drink.'
+    description: 'Me: You drink.',
+    story: 'It’s all about you! Take a sip and enjoy the game.'
   },
   '4': {
     title: 'Four',
-    description: 'Floor: Touch the floor. Last one drinks.'
+    description: 'Floor: Touch the floor. Last one drinks.',
+    story: 'Drop down and touch the floor. The slowest player takes a drink.'
   },
   '5': {
     title: 'Five',
-    description: 'Guys: All guys drink.'
+    description: 'Guys: All guys drink.',
+    story: 'Gentlemen, raise your glasses! All men take a sip.'
   },
   '6': {
     title: 'Six',
-    description: 'Girls: All girls drink.'
+    description: 'Girls: All girls drink.',
+    story: 'Ladies, it’s your turn! All women take a sip.'
   },
   '7': {
     title: 'Seven',
-    description: 'Heaven: Point up. Last one drinks.'
+    description: 'Heaven: Point up. Last one drinks.',
+    story: 'Hands to the sky! The last one pointing upwards drinks.'
   },
   '8': {
     title: 'Eight',
-    description: 'Mate: Choose a mate. When you drink, they drink.'
+    description: 'Mate: Choose a mate. When you drink, they drink.',
+    story: 'Pick a mate. From now on, when you drink, they must drink too.'
   },
   '9': {
     title: 'Nine',
-    description: 'Rhyme: Say a word. Next players say words that rhyme. First stuck drinks.'
+    description: 'Rhyme: Say a word. Next players say words that rhyme. First stuck drinks.',
+    story: 'Start a rhyme game! Say a word; the next players rhyme until someone gets stuck.'
   },
   '10': {
     title: 'Ten',
-    description: 'Category: Pick a category. Say items. First stuck drinks.'
+    description: 'Category: Pick a category. Say items. First stuck drinks.',
+    story: 'Choose a category like fruits or movies. Each player names something until someone repeats or gets stuck.'
   },
   'J': {
     title: 'Jack',
-    description: 'Rule: Make a new rule. Anyone who breaks it drinks.'
+    description: 'Rule: Make a new rule. Anyone who breaks it drinks.',
+    story: 'Become the rule maker! Invent a new rule. Anyone who breaks it must drink.'
   },
   'Q': {
     title: 'Queen',
-    description: 'Question master: Ask questions. Anyone who answers drinks.'
+    description: 'Question master: Ask questions. Anyone who answers drinks.',
+    story: 'You are the question master. Ask questions and catch anyone who answers out loud – they drink!'
   },
   'K': {
     title: 'King',
-    description: 'King’s Cup: Pour some of your drink into the cup. Fourth king drinks it.'
+    description: 'King’s Cup: Pour some of your drink into the cup. Fourth king drinks it.',
+    story: 'Add some of your drink to the cup. Whoever draws the fourth King drinks the entire cup!'
   }
 };
 
@@ -79,19 +93,21 @@ const iconMap = {
   'K': 'crown'        // king’s cup
 };
 const animationMap = {
-  'A': 'flip-animation',
-  '2': 'slide-animation',
-  '3': 'bounce-animation',
-  '4': 'fade-animation',
-  '5': 'zoom-animation',
-  '6': 'zoom-animation',
-  '7': 'slide-animation',
-  '8': 'bounce-animation',
-  '9': 'zoom-animation',
-  '10': 'rotate-animation',
-  'J': 'flip-animation',
-  'Q': 'slide-animation',
-  'K': 'rotate-animation'
+  // Assign custom animation classes to each card type to enhance
+  // the storytelling. These classes are defined in the CSS file.
+  'A': 'waterfall-animation',
+  '2': 'choose-animation',
+  '3': 'me-animation',
+  '4': 'floor-animation',
+  '5': 'guys-animation',
+  '6': 'girls-animation',
+  '7': 'heaven-animation',
+  '8': 'mate-animation',
+  '9': 'rhyme-animation',
+  '10': 'category-animation',
+  'J': 'rule-animation',
+  'Q': 'question-animation',
+  'K': 'king-animation'
 };
 
 // Attach icon and animation to each card assignment based on the maps above.
@@ -149,6 +165,10 @@ const currentPlayerP = document.getElementById('currentPlayer');
 const avatarImg = document.getElementById('avatarImg');
 const nameInputsDiv = document.getElementById('nameInputs');
 
+// New UI elements for the deck and story display
+const deckDiv = document.getElementById('deck');
+const storyDisplay = document.getElementById('storyDisplay');
+
 // Initialize game when clicking Start Game
 startBtn.addEventListener('click', () => {
   const countInput = document.getElementById('playerCount');
@@ -195,18 +215,25 @@ startBtn.addEventListener('click', () => {
   ruleDisplay.textContent = '';
   cardDisplay.className = 'card-back';
   cardDisplay.textContent = '';
+  if (storyDisplay) storyDisplay.textContent = '';
+  // Show the deck for the first draw and hide the drawn card area
+  if (deckDiv) {
+    deckDiv.style.display = 'block';
+  }
   updateCurrentPlayer();
   setupDiv.style.display = 'none';
   gameDiv.style.display = 'block';
-  drawBtn.disabled = false;
+  // Ensure next button is hidden until a card is drawn
   nextBtn.style.display = 'none';
 });
 
-// Draw a card when clicking Draw Card
-drawBtn.addEventListener('click', () => {
+// Handle drawing a card. This function encapsulates the logic for
+// drawing from the deck, updating the UI and applying animations.
+function drawCard() {
   if (deck.length === 0) {
     ruleDisplay.textContent = 'No more cards! The game is over.';
-    drawBtn.disabled = true;
+    // Hide the deck because there are no cards left
+    if (deckDiv) deckDiv.style.display = 'none';
     nextBtn.style.display = 'none';
     return;
   }
@@ -216,18 +243,19 @@ drawBtn.addEventListener('click', () => {
   if (value === 'K') {
     kingsDrawn++;
   }
-      // Display card front with value and apply animation
-      // Remove any previous animation class before adding a new one
-      if (currentAnimationClass) {
-        cardDisplay.classList.remove(currentAnimationClass);
-      }
-      cardDisplay.className = 'card-front';
-      // Apply the animation class for this card
-      currentAnimationClass = assignment.animation || '';
-      if (currentAnimationClass) {
-        cardDisplay.classList.add(currentAnimationClass);
-      }
-      cardDisplay.textContent = value;
+  // Hide the deck while showing the drawn card
+  if (deckDiv) deckDiv.style.display = 'none';
+  // Remove any previous animation class before adding a new one
+  if (currentAnimationClass) {
+    cardDisplay.classList.remove(currentAnimationClass);
+  }
+  // Display card front and apply animation for this card
+  cardDisplay.className = 'card-front';
+  currentAnimationClass = assignment.animation || '';
+  if (currentAnimationClass) {
+    cardDisplay.classList.add(currentAnimationClass);
+  }
+  cardDisplay.textContent = value;
   // Compose the rule description with dynamic player suggestion if needed
   let description = assignment.description;
   // For cards that require choosing another player (2 and 8), suggest a random other player
@@ -241,34 +269,47 @@ drawBtn.addEventListener('click', () => {
       description = description.replace('mate', other);
     }
   }
-  // If an Ace or King is drawn, add extra instruction for the fourth King
-  if (value === 'A' || value === 'K') {
-    if (value === 'K' && kingsDrawn === 4) {
-      description += ' This is the fourth King – you drink the cup.';
-    }
+  // If a King is drawn and it is the fourth one, add extra instruction
+  if (value === 'K' && kingsDrawn === 4) {
+    description += ' This is the fourth King – you drink the cup.';
   }
-      // Show the rule along with an icon. Use innerHTML to include the icon image.
-      const iconUrl = assignment.icon;
-      ruleDisplay.innerHTML = `<img src="${iconUrl}" alt="" style="width:32px;height:32px;vertical-align:middle;margin-right:0.5rem;"> <strong>${assignment.title}</strong>: ${description}`;
-  // After drawing, disable draw button and show Next Turn
-  drawBtn.disabled = true;
+  // Show the rule with an icon and the story below. Use innerHTML to include the icon image.
+  const iconUrl = assignment.icon;
+  ruleDisplay.innerHTML = `<img src="${iconUrl}" alt="" style="width:32px;height:32px;vertical-align:middle;margin-right:0.5rem;"> <strong>${assignment.title}</strong>: ${description}`;
+  // Display the story
+  if (storyDisplay) {
+    storyDisplay.textContent = assignment.story || '';
+  }
+  // Show Next Turn button
   nextBtn.style.display = 'inline-block';
-});
+}
+
+// Remove old draw button listener if it exists (fallback for older versions). We'll
+// still keep the draw button hidden in the UI, but ensure no action is bound.
+if (drawBtn) {
+  drawBtn.style.display = 'none';
+  drawBtn.disabled = true;
+}
 
 // Move to next player's turn
 nextBtn.addEventListener('click', () => {
-      // Reset card display to back and remove any animation class
-      if (currentAnimationClass) {
-        cardDisplay.classList.remove(currentAnimationClass);
-        currentAnimationClass = '';
-      }
-      cardDisplay.className = 'card-back';
-      cardDisplay.textContent = '';
+  // Reset card display to back and remove any animation class
+  if (currentAnimationClass) {
+    cardDisplay.classList.remove(currentAnimationClass);
+    currentAnimationClass = '';
+  }
+  cardDisplay.className = 'card-back';
+  cardDisplay.textContent = '';
+  // Clear rule and story
   ruleDisplay.textContent = '';
+  if (storyDisplay) storyDisplay.textContent = '';
+  // Show the deck again for the next draw
+  if (deckDiv) {
+    deckDiv.style.display = 'block';
+  }
   // Advance player index
   currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
   updateCurrentPlayer();
-  drawBtn.disabled = false;
   nextBtn.style.display = 'none';
 });
 
@@ -292,6 +333,13 @@ resetBtn.addEventListener('click', () => {
         cardDisplay.classList.remove(currentAnimationClass);
         currentAnimationClass = '';
       }
+      // Hide the deck and clear story
+      if (deckDiv) {
+        deckDiv.style.display = 'none';
+      }
+      if (storyDisplay) {
+        storyDisplay.textContent = '';
+      }
 });
 
 // Update the display of whose turn it is
@@ -305,4 +353,15 @@ function updateCurrentPlayer() {
     avatarImg.style.display = 'block';
   }
   currentPlayerP.textContent = `${name}'s turn`;
+}
+
+// Attach click handler to the deck to draw a card
+if (deckDiv) {
+  deckDiv.addEventListener('click', () => {
+    // Only allow drawing a card if the next button is hidden (i.e., current player has not
+    // already drawn). This prevents multiple draws in the same turn.
+    if (nextBtn.style.display === 'none' || nextBtn.style.display === '') {
+      drawCard();
+    }
+  });
 }
